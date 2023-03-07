@@ -52,10 +52,10 @@ pipeline {
         reportName: 'My Reports',
         reportTitles: 'The Report'])
 
-        emailext attachLog: true, 
+        emailext (attachLog: true, 
         body: 'See the attached log below',
         subject: 'Test Subject - Build $BUILD_NUMBER',
-        to: 'rafael.barreto@liferay.com'
+        to: 'rafael.barreto@liferay.com')
         }
 
     //     always {
