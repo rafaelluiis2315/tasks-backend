@@ -3,12 +3,12 @@ pipeline {
     stages {
         stage ('Build Backend') {
             steps {
-                bat 'mvn clean package -DskipTests=true'
+                sh 'mvn clean package -DskipTests=true'
             }
         }
         stage ('Unit Tests') {
             steps {
-                bat 'mvn test'
+                sh 'mvn test'
             }
         }
         stage ('Deploy Backend') {
@@ -20,7 +20,7 @@ pipeline {
             steps {
                 dir('api-test') {
                     git credentialsId: '14cda81d-84da-4317-95ae-8b65117a2296', url: 'https://github.com/rafaelluiis2315/tasks-api-test.git'
-                    bat 'mvn test'
+                    sh 'mvn test'
                 }
             }
         }
@@ -28,7 +28,7 @@ pipeline {
             steps {
                 dir('frontend') {
                     git credentialsId: '14cda81d-84da-4317-95ae-8b65117a2296', url: 'https://github.com/rafaelluiis2315/tasks-frontend.git'
-                    bat 'mvn clean package'
+                    sh 'mvn clean package'
                     deploy adapters: [tomcat8(credentialsId: 'TomcatLogin', path: '', url: 'http://localhost:8001/')], contextPath: 'tasks', war: 'target/tasks.war'
                 }
             }
@@ -37,7 +37,7 @@ pipeline {
             steps {
                 dir('functional-test') {
                     git credentialsId: '14cda81d-84da-4317-95ae-8b65117a2296', url: 'https://github.com/rafaelluiis2315/petros-automation.git'
-                    bat './gradlew runPoshi'
+                    sh './gradlew runPoshi'
                 }
             }
         }
