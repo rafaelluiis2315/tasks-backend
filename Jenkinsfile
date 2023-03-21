@@ -36,40 +36,32 @@ pipeline {
         stage ('Functional Test') {
             steps {
                 dir('functional-test') {
+                    git credentialsId: '14cda81d-84da-4317-95ae-8b65117a2296', url: 'https://github.com/rafaelluiis2315/tasks-functional-tests.git'
+                    sh 'mvn test'
+                }
+            }
+        }
+        stage ('Functional Test Petros') {
+            steps {
+                dir('functional-test-petros') {
                     git credentialsId: '14cda81d-84da-4317-95ae-8b65117a2296', url: 'https://github.com/rafaelluiis2315/petros-automation.git'
                     sh './gradlew runPoshi'
                 }
             }
         }
-        
     }
-    // post {
-    //     // publishHTML (target : [allowMissing: false,
-    //     // alwaysLinkToLastBuild: true,
-    //     // keepAll: true,
-    //     // reportDir: 'reports',
-    //     // reportFiles: 'myreport.html',
-    //     // reportName: 'My Reports',
-    //     // reportTitles: 'The Report'])
-
-    //     // emailext (attachLog: true, 
-    //     // body: 'See the attached log below',
-    //     // subject: 'Test Subject - Build $BUILD_NUMBER',
-    //     // to: 'rafael.barreto@liferay.com')
-    //     // }
-
-    //     always {
-    //         publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'reports', reportFiles: 'myreport.html', reportName: 'My Reports', reportTitles: '', useWrapperFileDirectly: true])
-    //         junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml, api-test/target/surefire-reports/*.xml, functional-test/target/surefire-reports/*.xml, functional-test/target/failsafe-reports/*.xml'
-    //         archiveArtifacts artifacts: 'target/tasks-backend.war, frontend/target/tasks.war', onlyIfSuccessful: true
-    //     }
-    //     unsuccessful {
-    //         emailext attachLog: true, body: 'See the attached log below', subject: 'Build $BUILD_NUMBER has failed', to: 'rafael.barreto@liferay.com'
-    //     }
-    //     fixed {
-    //         emailext attachLog: true, body: 'See the attached log below', subject: 'Build is fine!!!', to: 'rafael.barreto@liferay.com'
-    //     }
-    // }
+    post {
+        always {
+            junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml, api-test/target/surefire-reports/*.xml, functional-test/target/surefire-reports/*.xml, functional-test/target/failsafe-reports/*.xml, functional-test-petros/test-results/TEST-com.liferay.poshi.runner.PoshiRunner.xml'
+            archiveArtifacts artifacts: 'target/tasks-backend.war, frontend/target/tasks.war', onlyIfSuccessful: true
+        }
+        unsuccessful {
+            emailext attachLog: true, body: 'See the attached log below', subject: 'Build $BUILD_NUMBER has failed', to: 'rafael.barreto@liferay.com'
+        }
+        fixed {
+            emailext attachLog: true, body: 'See the attached log below', subject: 'Build is fine!!!', to: 'rafael.barreto@liferay.com'
+        }
+    }
 }
 
 
